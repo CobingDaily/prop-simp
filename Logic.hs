@@ -28,7 +28,7 @@ neg (Symbol name) = Lnot (Symbol name)
 
 implies :: Prop -> Prop -> Bool
 implies p q
-  | simplify(p) == simplify(q) = True
+  | simplify p == simplify q = True
 implies (Lor p q) r = p `implies` r || q `implies` r
 implies a (Land b c) = a `implies` b || a `implies` c
 implies _ _ = False
@@ -60,7 +60,8 @@ simplify p = p
 simplify_loop :: Prop -> Prop
 simplify_loop p0 =
   if (p0 == p1) then p1 else simplify_loop p1
-    where p1 = simplify p0
+  where
+    p1 = simplify p0
 
 -- eval :: Prop -> Bool
 -- eval (Land p q) = (eval p) && (eval q)
