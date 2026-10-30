@@ -13,6 +13,14 @@ main = hspec $ do
       simplify_loop (not_not (Symbol "p")) `shouldBe` Symbol "p"
     it "p or True yields True" $
       simplify_loop (Lor (Symbol "p") (Value True)) `shouldBe` Value True
+    it "De Morgan's Law 1: (!p or !q) <=> !(p and q)" $
+      simplify_loop (Lor (Lnot (Symbol "p")) (Lnot (Symbol "q"))) `shouldBe` (Lnot (Land (Symbol "p") (Symbol "q")))
+    it "De Morgan's Law 2: (!p and !q) <=> !(p or q)" $
+      simplify_loop (Land (Lnot (Symbol "p")) (Lnot (Symbol "q"))) `shouldBe` (Lnot (Lor (Symbol "p") (Symbol "q")))
+    it "(p and q) or (not p or not q) yields True" $
+      simplify_loop (Lor (Land (Symbol "p") (Symbol "q")) (Lor (Lnot (Symbol "p")) (Lnot (Symbol "q")))) `shouldBe` Value True
+    it "(p or q) and (not p and not q) yields False" $
+      simplify_loop (Land (Lor (Symbol "p") (Symbol "q")) (Land (Lnot (Symbol "p")) (Lnot (Symbol "q")))) `shouldBe` Value False
     it "p and False yields False" $
       simplify_loop (Land (Symbol "p") (Value False)) `shouldBe` Value False
     it "p buiried inside Lor" $

@@ -53,6 +53,8 @@ simplify p
   | trivially_true p = Value True
   | trivially_false p = Value False
 simplify (Lnot (Lnot p)) = simplify p
+simplify (Land (Lnot p) (Lnot q)) = Lnot (Lor (simplify p) (simplify q))
+simplify (Lor (Lnot p) (Lnot q)) = Lnot (Land (simplify p) (simplify q))
 simplify (Land l r)
   | l == r = simplify l
   | l == (Lnot r) = Value False
