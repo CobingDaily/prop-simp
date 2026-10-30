@@ -38,5 +38,5 @@ simplify_loop (Land (Lor (Symbol "p") (Symbol "q")) (Lor (Symbol "r") (Symbol "s
 ```
 
 ### Todo
-[x]. Write tests
-[ ]. Parse mathematical notation into `Prop` ast
+- [x] Write tests
+- [ ] Parse mathematical notation into `Prop` ast
