@@ -100,4 +100,5 @@ test-suite prop-simp-test
     -- Test dependencies.
     build-depends:
         base ^>=4.20.2.0,
-        prop-simp
+        prop-simp,
+        hspec
