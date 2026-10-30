@@ -32,7 +32,26 @@ implies (Lor p q) r = p `implies` r || q `implies` r
 implies a (Land b c) = a `implies` b || a `implies` c
 implies _ _ = False
 
+trivially_true :: Prop -> Bool
+trivially_true (Value True) = True
+trivially_true (Land l r) = trivially_true l && trivially_true r
+trivially_true (Lor l r) = trivially_true l || trivially_true r
+trivially_true (Lxor l r) = trivially_true l /= trivially_true r
+trivially_true (Leq l r) = trivially_true l == trivially_true r
+trivially_true _ = False
+
+trivially_false :: Prop -> Bool
+trivially_false (Value False) = True
+trivially_false (Land l r) = trivially_false l || trivially_false r
+trivially_false (Lor l r) = trivially_false l && trivially_false r
+trivially_false (Lxor l r) = trivially_false l == trivially_false r
+trivially_false (Leq l r) = trivially_false l /= trivially_false r
+trivially_false _ = False
+
 simplify :: Prop -> Prop
+simplify p
+  | trivially_true p = Value True
+  | trivially_false p = Value False
 simplify (Lnot (Lnot p)) = simplify p
 simplify (Land l r)
   | l == r = simplify l
@@ -61,11 +80,3 @@ simplify_loop p0 =
   if (p0 == p1) then p1 else simplify_loop p1
   where
     p1 = simplify p0
-
--- eval :: Prop -> Bool
--- eval (Land p q) = (eval p) && (eval q)
--- eval (Lor p q) = (eval p) || (eval q)
--- eval (Lxor p q) = (eval p) /= (eval q)
--- eval (Leq p q) = (eval p) == (eval q)
--- eval (Lnot p) = eval (neg p)
--- eval (Value b) = b

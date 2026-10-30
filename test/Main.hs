@@ -11,6 +11,10 @@ main = hspec $ do
   describe "simplify_loop" $ do
     it "Not not p yields p" $
       simplify_loop (not_not (Symbol "p")) `shouldBe` Symbol "p"
+    it "p or True yields True" $
+      simplify_loop (Lor (Symbol "p") (Value True)) `shouldBe` Value True
+    it "p and False yields False" $
+      simplify_loop (Land (Symbol "p") (Value False)) `shouldBe` Value False
     it "p buiried inside Lor" $
       simplify_loop (Land (Lor (Symbol "q") (Lor (Symbol "r") (Symbol "p"))) (Symbol "p")) `shouldBe` Symbol "p"
     it "Land/Lor swapped, with an inner idempotent Land" $
