@@ -3,8 +3,10 @@ module Logic where
 main :: IO ()
 main = putStrLn "Hello"
 
+p_and_not_p :: Prop -> Prop
 p_and_not_p prop = Land prop (Lnot prop)
 
+p_or_not_p :: Prop -> Prop
 p_or_not_p prop = Lor prop (Lnot prop)
 
 data Prop
