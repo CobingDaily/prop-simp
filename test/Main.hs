@@ -35,3 +35,7 @@ main = hspec $ do
       simplify_loop (Land (Land (Lor (Symbol "p") (Symbol "q")) (Symbol "p")) (Lor (Land (Symbol "r") (Symbol "s")) (Symbol "r"))) `shouldBe` Land (Symbol "p") (Symbol "r")
     it "Nothing to simplify: should come back unchanged" $
       simplify_loop (Land (Lor (Symbol "p") (Symbol "q")) (Lor (Symbol "r") (Symbol "s"))) `shouldBe` Land (Lor (Symbol "p") (Symbol "q")) (Lor (Symbol "r") (Symbol "s"))
+
+-- !(p and q) and (p or q)
+-- !(p or q) or (p and q)
+-- (!p and !q) or (p and q)

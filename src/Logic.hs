@@ -1,15 +1,8 @@
 module Logic where
 
-p_and_not_p :: Prop -> Prop
-p_and_not_p prop = Land prop (Lnot prop)
-
-p_or_not_p :: Prop -> Prop
-p_or_not_p prop = Lor prop (Lnot prop)
-
 data Prop
   = Land Prop Prop
   | Lor Prop Prop
-  | Lxor Prop Prop
   | Leq Prop Prop
   | Lnot Prop
   | Value Bool
@@ -19,8 +12,7 @@ data Prop
 neg :: Prop -> Prop
 neg (Land p q) = (Lor (neg p) (neg q))
 neg (Lor p q) = (Land (neg p) (neg q))
-neg (Lxor p q) = (Leq p q)
-neg (Leq p q) = (Lxor p q)
+neg (Leq p q) = (Leq (neg p) q)
 neg (Lnot p) = p
 neg (Value b) = Value (not b)
 neg (Symbol name) = Lnot (Symbol name)
@@ -36,16 +28,16 @@ trivially_true :: Prop -> Bool
 trivially_true (Value True) = True
 trivially_true (Land l r) = trivially_true l && trivially_true r
 trivially_true (Lor l r) = trivially_true l || trivially_true r
-trivially_true (Lxor l r) = trivially_true l /= trivially_true r
-trivially_true (Leq l r) = trivially_true l == trivially_true r
+trivially_true (Leq l r) =
+  (trivially_true l && trivially_true r) || (trivially_false l && trivially_false l)
 trivially_true _ = False
 
 trivially_false :: Prop -> Bool
 trivially_false (Value False) = True
 trivially_false (Land l r) = trivially_false l || trivially_false r
 trivially_false (Lor l r) = trivially_false l && trivially_false r
-trivially_false (Lxor l r) = trivially_false l == trivially_false r
-trivially_false (Leq l r) = trivially_false l /= trivially_false r
+trivially_false (Leq l r) =
+  (trivially_true l && trivially_false r) || (trivially_false l && trivially_true l)
 trivially_false _ = False
 
 simplify :: Prop -> Prop
@@ -72,9 +64,6 @@ simplify (Lor l r)
 simplify (Leq l r)
   | l == r = Value True
   | otherwise = Leq (simplify l) (simplify r)
-simplify (Lxor l r)
-  | l == r = Value False
-  | otherwise = Lxor (simplify l) (simplify r)
 simplify p = p
 
 simplify_loop :: Prop -> Prop
