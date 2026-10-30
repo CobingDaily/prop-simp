@@ -1,4 +1,4 @@
-module Main where
+module Logic where
 
 main :: IO ()
 main = putStrLn "Hello"
